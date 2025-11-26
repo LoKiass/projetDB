@@ -15,9 +15,10 @@ namespace projetDB
 
             using (var conn = connection.Open_Connection(_dataSource))
             {
+                // Select du dernier ID de la table 
                 using (var cmd = new NpgsqlCommand("SELECT * FROM get_last_id()", conn))
                 {
-                   
+
                     try
                     {
                         var id = cmd.ExecuteScalar();
@@ -26,13 +27,13 @@ namespace projetDB
                         {
                             id_last = Convert.ToInt32(id) + 1;
 
-                            id_LABEL.Text = "Intervention : " + id_last ;
+                            id_LABEL.Text = "Intervention : " + id_last;
                         }
                         else
                         {
                             MessageBox.Show("ERREUR FATALE : LE PROGRAMME NA PAS PUE RECUP L'ID ");
                         }
-                        
+
                     }
                     catch (NpgsqlException er)
                     {
@@ -42,10 +43,12 @@ namespace projetDB
                     {
                         MessageBox.Show(er.Message);
                     }
-                   
+
                 }
 
-               
+                connection.update_DataGrid(conn, dataGrid);
+             
+
             }
         }
 
@@ -78,12 +81,12 @@ namespace projetDB
         {
             using (var conn = connection.Open_Connection(_dataSource)) // Ouvertue de la connexion
             {
-                using ( var cmd = new NpgsqlCommand("CALL insert_intervention(@de, @s, @da)", conn)) // Creation de la commande
+                using (var cmd = new NpgsqlCommand("CALL insert_intervention(@de, @s, @da)", conn)) // Creation de la commande
                 {
                     if (!string.IsNullOrEmpty(description_TEXTBOX.Text) && // Verification si les cases sont pleines 
                         !string.IsNullOrEmpty(status_TEXTBOX.Text))
                     {
-                        try 
+                        try
                         {
                             // Ajout des paramètres pour la base de donnée 
                             cmd.Parameters.AddWithValue("@de", description_TEXTBOX.Text);
@@ -94,6 +97,8 @@ namespace projetDB
 
                             id_last += 1; // Modificaiton de l'id au niveau de l'interface 
                             id_LABEL.Text = "Intervention " + id_last;
+
+                            dataGrid.Rows.Add(description_TEXTBOX.Text, status_TEXTBOX.Text, date_DATETIMEPICKER.Value.Date.ToShortDateString(), id_last - 1); // Ajout de la nouvelle ligne dans le datagrid
                         }
                         catch (NpgsqlException er)
                         {
@@ -109,6 +114,9 @@ namespace projetDB
             }
         }
 
-        
+        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //
+        }
     }
 }

@@ -37,11 +37,17 @@
             description_LABEL = new Label();
             status_LABEL = new Label();
             date_LABEL = new Label();
+            dataGrid = new DataGridView();
+            Description = new DataGridViewTextBoxColumn();
+            Status = new DataGridViewTextBoxColumn();
+            Date = new DataGridViewTextBoxColumn();
+            Id = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dataGrid).BeginInit();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(335, 285);
+            button1.Location = new Point(704, -7);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
@@ -116,11 +122,42 @@
             date_LABEL.TabIndex = 8;
             date_LABEL.Text = "Date : ";
             // 
+            // dataGrid
+            // 
+            dataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGrid.Columns.AddRange(new DataGridViewColumn[] { Description, Status, Date, Id });
+            dataGrid.Location = new Point(115, 251);
+            dataGrid.Name = "dataGrid";
+            dataGrid.Size = new Size(608, 150);
+            dataGrid.TabIndex = 9;
+            dataGrid.CellContentClick += dataGrid_CellContentClick;
+            // 
+            // Description
+            // 
+            Description.HeaderText = "Description";
+            Description.Name = "Description";
+            // 
+            // Status
+            // 
+            Status.HeaderText = "Status";
+            Status.Name = "Status";
+            // 
+            // Date
+            // 
+            Date.HeaderText = "Date";
+            Date.Name = "Date";
+            // 
+            // Id
+            // 
+            Id.HeaderText = "Id";
+            Id.Name = "Id";
+            // 
             // PagePrincipale
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(dataGrid);
             Controls.Add(date_LABEL);
             Controls.Add(status_LABEL);
             Controls.Add(description_LABEL);
@@ -132,6 +169,7 @@
             Controls.Add(button1);
             Name = "PagePrincipale";
             Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)dataGrid).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -147,5 +185,10 @@
         private Label description_LABEL;
         private Label status_LABEL;
         private Label date_LABEL;
+        private DataGridView dataGrid;
+        private DataGridViewTextBoxColumn Description;
+        private DataGridViewTextBoxColumn Status;
+        private DataGridViewTextBoxColumn Date;
+        private DataGridViewTextBoxColumn Id;
     }
 }

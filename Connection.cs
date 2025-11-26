@@ -42,5 +42,26 @@ namespace projetDB
                 throw;
             }
         }
+        public static void update_DataGrid(NpgsqlConnection conn, DataGridView dataGrid)
+        {
+            // Retrieve tous les Rows pour les affiches dans la DataGrid 
+            using (var cmd = new NpgsqlCommand("SELECT * FROM intervention", conn))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        dataGrid.Rows.Add(
+                            reader.GetString(0),
+                            reader.GetString(1),
+                            reader.GetDateTime(2),
+                            reader.GetInt32(3)
+                            );
+                    }
+                }
+            }
+
+        }
+
     }
 }
