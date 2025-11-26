@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Username=admin_intervention;Password=root;Database=intervention_database"
+  }
+}
+
