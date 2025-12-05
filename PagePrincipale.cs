@@ -12,15 +12,15 @@ namespace projetDB
             InitializeComponent();
 
             _dataSource = dataSource;
-
-            using (var conn = connection.Open_Connection(_dataSource))
+            try
             {
-                // Select du dernier ID de la table 
-                using (var cmd = new NpgsqlCommand("SELECT * FROM get_last_id()", conn))
+                using (var conn = connection.Open_Connection(_dataSource))
                 {
-
-                    try
+                    // Select du dernier ID de la table 
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM get_last_id()", conn))
                     {
+
+
                         var id = cmd.ExecuteScalar();
 
                         if (id != null)
@@ -33,23 +33,21 @@ namespace projetDB
                         {
                             MessageBox.Show("ERREUR FATALE : LE PROGRAMME NA PAS PUE RECUP L'ID ");
                         }
-
-                    }
-                    catch (NpgsqlException er)
-                    {
-                        MessageBox.Show(er.Message);
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(er.Message);
                     }
 
+                    connection.update_DataGrid(conn, dataGrid);
                 }
-
-                connection.update_DataGrid(conn, dataGrid);
-             
+            }
+            catch (NpgsqlException er)
+            {
+                MessageBox.Show("Erreur lors de l'accès à la base de donnée : " + er.Message);
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("Erreur :" + er.Message);
 
             }
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -58,16 +56,8 @@ namespace projetDB
             {
                 using (var cmd = new NpgsqlCommand("CREATE TABLE B();", conn))
                 {
-                    try
-                    {
-                        var result = cmd.ExecuteNonQuery();
-                    }
-
-                    catch (NpgsqlException er)
-                    {
-                        MessageBox.Show("Erreur lors de l'exécution de la commande SQL : " + er.Message);
-                    }
-
+                    
+                    var result = cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -79,15 +69,16 @@ namespace projetDB
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (var conn = connection.Open_Connection(_dataSource)) // Ouvertue de la connexion
+            try
             {
-                using (var cmd = new NpgsqlCommand("CALL insert_intervention(@de, @s, @da)", conn)) // Creation de la commande
+                using (var conn = connection.Open_Connection(_dataSource)) // Ouvertue de la connexion
                 {
-                    if (!string.IsNullOrEmpty(description_TEXTBOX.Text) && // Verification si les cases sont pleines 
-                        !string.IsNullOrEmpty(status_TEXTBOX.Text))
+                    using (var cmd = new NpgsqlCommand("CALL insert_intervention(@de, @s, @da)", conn)) // Creation de la commande
                     {
-                        try
+                        if (!string.IsNullOrEmpty(description_TEXTBOX.Text) && // Verification si les cases sont pleines 
+                            !string.IsNullOrEmpty(status_TEXTBOX.Text))
                         {
+
                             // Ajout des paramètres pour la base de donnée 
                             cmd.Parameters.AddWithValue("@de", description_TEXTBOX.Text);
                             cmd.Parameters.AddWithValue("@s", status_TEXTBOX.Text);
@@ -100,18 +91,25 @@ namespace projetDB
 
                             dataGrid.Rows.Add(description_TEXTBOX.Text, status_TEXTBOX.Text, date_DATETIMEPICKER.Value.Date.ToShortDateString(), id_last - 1); // Ajout de la nouvelle ligne dans le datagrid
                         }
-                        catch (NpgsqlException er)
-                        {
-                            MessageBox.Show(er.Message); // Si erreur lors de l'accès à la base de donné ou autres
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Vous devez remplir toutes les cases ");
-                    }
 
+
+                        else
+                        {
+                            MessageBox.Show("Vous devez remplir toutes les cases ");
+                        }
+
+                    }
                 }
             }
+            catch (NpgsqlException er)
+            {
+                MessageBox.Show("Erreur lors de l'accès à la base de donnée : " + er.Message);
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("Erreur :" + er.Message);
+            }
+
         }
 
         private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)

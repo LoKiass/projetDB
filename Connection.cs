@@ -17,15 +17,14 @@ namespace projetDB
         {
             try
             {
-                var connectionString = JsonNode.Parse(File.ReadAllText("appsetings.json"))["ConnectionStrings"]["DefaultConnection"].ToString();
+                var connectionString = JsonNode.Parse(File.ReadAllText("Appsetings.json"))["ConnectionStrings"]["DefaultConnection"].ToString();
                 _dataSource = NpgsqlDataSource.Create(connectionString);
 
                 return _dataSource;
             }
             catch (Exception er)
             {
-                MessageBox.Show("Erreur lors de la création du DataSource : " + er.Message);
-                throw;
+                return null;
             }
         }
 
@@ -36,10 +35,9 @@ namespace projetDB
                 _connection = dataSource.OpenConnection(); // Ouvere la connexion
                 return _connection;
             }
-            catch(NpgsqlException er)
+            catch (NpgsqlException er)
             {
-                MessageBox.Show($"Erreur lors de l'ouverture de la connexion. : " + er.Message);
-                throw;
+                return null;
             }
         }
         public static void update_DataGrid(NpgsqlConnection conn, DataGridView dataGrid)
